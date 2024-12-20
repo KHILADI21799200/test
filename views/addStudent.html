@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2471a3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            margin-top: 10px;
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box; /* Prevents overlapping issues */
+        }
+
+        input[type="submit"] {
+            background-color: #ccc;
+            color: white;
+            border: none;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        input[type="submit"].active {
+            background-color: #4CAF50;
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        input[type="submit"]:hover.active {
+            background-color: #45a049;
+        }
+
+        .form-container p {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Add Student Data</h2>
+        <form id="studentForm" action="add_student" method="post">
+            <label for="studentID">Student ID:</label>
+            <input type="text" id="studentID" name="studentID" required>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="fatherName">Father's Name:</label>
+            <input type="text" id="fatherName" name="fatherName" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required>
+
+            <label for="doj">Date of Joining:</label>
+            <input type="date" id="doj" name="doj" required>
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="contact">Contact:</label>
+            <input type="text" id="contact" name="contact" pattern="\d{10}" title="Contact number must be 10 digits" required>
+
+            <label for="schoolOrCollege">School or College Name:</label>
+            <input type="text" id="schoolOrCollege" name="schoolOrCollege" required>
+
+            <input type="submit" value="Submit" id="submitButton" disabled>
+        </form>
+    </div>
+
+    <script>
+        // Get all input fields and the submit button
+        const form = document.getElementById('studentForm');
+        const inputs = form.querySelectorAll('input');
+        const submitButton = document.getElementById('submitButton');
+
+        // Function to check if all fields are filled
+        function checkFields() {
+            let allFilled = true;
+            inputs.forEach(input => {
+                if (input.type !== "submit" && !input.value.trim()) {
+                    allFilled = false;
+                }
+            });
+            if (allFilled) {
+                submitButton.disabled = false;
+                submitButton.classList.add('active');
+            } else {
+                submitButton.disabled = true;
+                submitButton.classList.remove('active');
+            }
+        }
+
+        // Add event listeners to all input fields
+        inputs.forEach(input => {
+            input.addEventListener('input', checkFields);
+        });
+    </script>
+</body>
+</html>

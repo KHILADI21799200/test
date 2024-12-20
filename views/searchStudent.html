@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Student</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+        }
+
+        nav {
+            background-color: #16a085;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav input[type="search"] {
+            height: 40px;
+            width: 300px;
+            padding: 0 15px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            font-size: 16px;
+            color: #333;
+        }
+
+        nav input[type="search"]::placeholder {
+            color: #aaa;
+        }
+
+        nav button {
+            height: 40px;
+            width: 100px;
+            border: none;
+            border-radius: 20px;
+            background-color: #2ecc71;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        nav button:hover {
+            background-color: #27ae60;
+        }
+
+        .content {
+            margin-top: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #16a085;
+            color: white;
+        }
+
+        td:first-child {
+            font-weight: bold;
+        }
+
+        #message {
+            color: red;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <input type="search" id="searchBox" placeholder="Enter Student ID" />
+        <button id="searchButton">Search</button>
+    </nav>
+    <div class="content">
+        <table id="resultsTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        document.getElementById('searchButton').addEventListener('click', async () => {
+            const searchBox = document.getElementById('searchBox');
+            const query = searchBox.value.trim();
+            const message = document.getElementById('message');
+            const resultsTable = document.getElementById('resultsTable');
+            const tbody = resultsTable.querySelector('tbody');
+
+            message.textContent = '';
+            resultsTable.style.display = 'none';
+            tbody.innerHTML = '';
+
+            if (!query) {
+                message.textContent = 'Please enter a Student ID.';
+                return;
+            }
+
+            try {
+                const response = await fetch('/search_student', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId: query }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const student = result.data;
+                    for (const [key, value] of Object.entries(student)) {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${key}</td>
+                                <td>${value !== null ? value : 'N/A'}</td>
+                            </tr>`;
+                    }
+                    resultsTable.style.display = '';
+                } else {
+                    message.textContent = result.message || 'No student found.';
+                }
+            } catch (error) {
+                message.textContent = 'An error occurred while searching.';
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
